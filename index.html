@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استحقاقِ زکوٰۃ کیلکولیٹر</title>
+    <style>
+        :root {
+            --bg-color: #1C120C;
+            --panel-color: #3D2B20;
+            --text-primary: #FFFFFF;
+            --text-secondary: #EEDC82;
+            --btn-color: #5C3D2E;
+            --btn-hover: #4A3125;
+            --error-color: #E2583E;
+            --border-color: #5C4033;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .simulator-card {
+            background-color: var(--panel-color);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Language Switcher */
+        .lang-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 6px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 4px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .lang-btn.active {
+            background-color: var(--btn-color);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Typography */
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .instructions {
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Input Styles */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+        }
+
+        /* Result Panel */
+        .summary-box {
+            background-color: rgba(0, 0, 0, 0.15);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+            margin-bottom: 20px;
+        }
+
+        .summary-line {
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+        
+        .summary-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .amount-highlight {
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            width: 100%;
+            background-color: var(--btn-color);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .action-btn:hover {
+            background-color: var(--btn-hover);
+        }
+
+        /* Messages */
+        .message-box {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .message-box.error {
+            display: block;
+            background-color: rgba(226, 88, 62, 0.15);
+            border: 1px solid var(--error-color);
+            color: #FF8A75;
+        }
+
+        .message-box.success {
+            display: block;
+            background-color: rgba(238, 220, 130, 0.1);
+            border: 1px solid var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        /* LTR Styles overrides for English */
+        .ltr-mode {
+            direction: ltr;
+        }
+    </style>
+</head>
+<body>
+
+<div class="simulator-card" id="mainContainer">
+    <!-- Language Switcher Row -->
+    <div class="lang-bar">
+        <button class="lang-btn active" onclick="switchLanguage('ur')">اردو</button>
+        <button class="lang-btn" onclick="switchLanguage('roman')">Roman Urdu</button>
+        <button class="lang-btn" onclick="switchLanguage('hi')">Hindi</button>
+        <button class="lang-btn" onclick="switchLanguage('en')">English</button>
+    </div>
+
+    <!-- Title Section -->
+    <div class="title" id="lblTitle">استحقاقِ زکوٰۃ کیلکولیٹر</div>
+    <div class="instructions" id="lblInstructions">براہ کرم اعداد و شمار درج کریں اور حتمی شرعی فیصلہ دیکھنے کے لیے نیچے بٹن دبائیں۔</div>
+
+    <!-- Input Fields -->
+    <div class="input-group">
+        <label class="input-label" id="lblGold">آپ کے پاس موجود سونے کی کل قیمت (قیمتِ فروخت) (₹)</label>
+        <div class="input-wrapper">
+            <input type="number" class="form-input" id="inputGold" placeholder="0">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label class="input-label" id="lblSilver">آپ کے پاس موجود چاندی کی کل قیمت (قیمتِ فروخت) (₹)</label>
+        <div class="input-wrapper">
+            <input type="number" class="form-input" id="inputSilver" placeholder="0">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label class="input-label" id="lblCash">نقد روپیہ، بینک بیلنس، کسی کو دیا ہوا قرضہ جس کے ملنے کی امید ہو (₹)</label>
+        <div class="input-wrapper">
+            <input type="number" class="form-input" id="inputCash" placeholder="0">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label class="input-label" id="lblTrade">مالِ تجارت، تیار شدہ مال، خام مال (تمام تجارتی سامان کی قیمتِ فروختگی کے اعتبار سے) (₹)</label>
+        <div class="input-wrapper">
+            <input type="number" class="form-input" id="inputTrade" placeholder="0">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label class="input-label" id="lblExcess">ضرورت سے زائد سامان (مکان، دکان، پلاٹ وغیرہ کی قیمتِ فروخت) (₹)</label>
+        <div class="input-wrapper">
+            <input type="number" class="form-input" id="inputExcess" placeholder="0">
+        </div>
+    </div>
+
+    <!-- Dynamic Summary -->
+    <div class="summary-box">
+        <div class="summary-line" id="lblNisabText">
+            آپ کے ذریعہ درج کی گئی ایک گرام چاندی کی مالیت کے اعتبار سے اس وقت نصابِ زکوٰۃ کی کل قیمت <span class="amount-highlight">₹1,46,964</span> ہے۔
+        </div>
+        <div class="summary-line" id="lblTotalText">
+            آپ کے ذریعہ درج تمام اثاثوں کی مجموعی مالیت <span class="amount-highlight" id="totalDisplay">₹0</span>
+        </div>
+    </div>
+
+    <!-- Bottom Action Button & Message Box -->
+    <button class="action-btn" id="btnCalculate" onclick="calculateEligibility()">نتائج دیکھیں</button>
+    <div class="message-box" id="msgBox"></div>
+</div>
+
+<script>
+    let currentLang = 'ur';
+    const silverNisabWeight = 612.35;
+    const silverRatePerGram = 240;
+    const nisabLimit = Math.round(silverNisabWeight * silverRatePerGram); // 146964
+
+    const data = {
+        ur: {
+            title: "استحقاقِ زکوٰۃ کیلکولیٹر",
+            instructions: "براہ کرم اعداد و شمار درج کریں اور حتمی شرعی فیصلہ دیکھنے کے لیے نیچے بٹن دبائیں۔",
+            gold: "آپ کے پاس موجود سونے کی کل قیمت (قیمتِ فروخت) (₹)",
+            silver: "آپ کے پاس موجود چاندی کی کل قیمت (قیمتِ فروخت) (₹)",
+            cash: "نقد روپیہ، بینک بیلنس، کسی کو دیا ہوا قرضہ جس کے ملنے کی امید ہو (₹)",
+            trade: "مالِ تجارت، تیار شدہ مال، خام مال (تمام تجارتی سامان کی قیمتِ فروختگی کے اعتبار سے) (₹)",
+            excess: "ضرورت سے زائد سامان (مکان، دکان، پلاٹ وغیرہ کی قیمتِ فروخت) (₹)",
+            btn: "نتائج دیکھیں",
+            nisabTemplate: "آپ کے ذریعہ درج کی گئی ایک گرام چاندی کی مالیت کے اعتبار سے اس وقت نصابِ زکوٰۃ کی کل قیمت <span class='amount-highlight'>₹" + nisabLimit.toLocaleString('en-IN') + "</span> ہے۔",
+            totalTemplate: "آپ کے ذریعہ درج تمام اثاثوں کی مجموعی مالیت ",
+            errEmpty: "براہ کرم پہلے خانوں میں درست معلومات درج کریں۔",
+            resEligible: "<strong>شرعی فیصلہ:</strong> یہ شخص زکوٰۃ کا مستحق ہے اور زکوٰۃ لے سکتا ہے۔",
+            resNotEligible: "<strong>شرعی فیصلہ:</strong> یہ شخص صاحبِ نصاب ہے، اس پر زکوٰۃ دینا فرض ہے اور اس کے لیے زکوٰۃ لینا جائز نہیں ہے۔",
+            resExcessRestriction: "<strong>شرعی فیصلہ:</strong> یہ شخص زکوٰۃ کا مستحق نہیں ہے اور اس کے لیے زکوٰۃ لینا جائز نہیں ہے، لیکن اس پر زکوٰۃ دینا بھی فرض نہیں ہے (کیونکہ یہ صرف ضرورت سے زائد سامان کی وجہ سے نصاب تک پہنچ رہا ہے)۔"
+        },
+        roman: {
